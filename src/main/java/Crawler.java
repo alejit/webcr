@@ -36,6 +36,7 @@ public class Crawler {
 
  class Task extends RecursiveTask<List<String>> {
 
+    public static final String TOMBLOMFIELD_COM = "tomblomfield.com";
     private final String url;
     private final JSONObject jsonNode;
     private final Set<String> linksVisited;
@@ -44,11 +45,6 @@ public class Crawler {
         this.url = url;
         this.linksVisited = linksCrawled;
         this.jsonNode = jsonNode;
-    }
-
-    boolean checkLink(String link) throws MalformedURLException {
-        URL url = new URL(link);
-        return !link.isEmpty() && url.getHost().equals("tomblomfield.com") && !linksVisited.contains(link);
     }
 
     @Override
@@ -64,10 +60,7 @@ public class Crawler {
                 for (Element link : links) {
                     String child = link.absUrl("href");
                     if (checkLink(child)) {
-                        JSONObject childJson = new JSONObject();
-                        childJson.put(child, new JSONArray());
-                        JSONArray childArray = jsonNode.getJSONArray(url);
-                        childArray.put(childJson);
+                        JSONObject childJson = getChildJson(child);
                         tasks.add(new Task(child, linksVisited, childJson));
                     }
                 }
@@ -81,5 +74,17 @@ public class Crawler {
         return new LinkedList<>();
     }
 
+     private JSONObject getChildJson(String child) {
+         JSONObject childJson = new JSONObject();
+         childJson.put(child, new JSONArray());
+         JSONArray childArray = jsonNode.getJSONArray(url);
+         childArray.put(childJson);
+         return childJson;
+     }
+
+     private boolean checkLink(String link) throws MalformedURLException {
+         URL url = new URL(link);
+         return !link.isEmpty() && url.getHost().equals(TOMBLOMFIELD_COM) && !linksVisited.contains(link);
+     }
  }
 
