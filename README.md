@@ -8,5 +8,5 @@ Additional libraries added in pom.xml
 
 Run the project:
 Go to project root directory and run the commands in the command line:
-   mvn compile
-   mvn exec:java -Dexec.mainClass=Crawler
+mvn compile
+mvn exec:java -Dexec.mainClass=Crawler
